@@ -49,3 +49,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Failed to reset password" }, { status: 500 })
   }
 }
+
+// [dev-log-sync]: 42089c81cac6116f
