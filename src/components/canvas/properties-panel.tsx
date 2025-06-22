@@ -176,3 +176,5 @@ export function PropertiesPanel({
     </aside>
   );
 }
+
+// [dev-log-sync]: b6b731104fc09358
