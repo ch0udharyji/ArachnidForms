@@ -23,3 +23,5 @@ export const templateSchema = z.object({
   isPublic: z.boolean(),
   category: z.string().optional(),
 })
+
+// [dev-log-sync]: dcaba7ff1d01ffc4
