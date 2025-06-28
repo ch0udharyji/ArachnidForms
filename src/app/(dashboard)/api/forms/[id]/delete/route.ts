@@ -33,3 +33,5 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
     return NextResponse.json({ error: "Internal Error" }, { status: 500 });
   }
 }
+
+// [dev-log-sync]: 3b3a84babaa7b774
