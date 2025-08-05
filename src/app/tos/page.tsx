@@ -30,3 +30,5 @@ export default function TermsOfService() {
     </div>
   )
 }
+
+// [dev-log-sync]: 83234cea0c99c249
