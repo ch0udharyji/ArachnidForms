@@ -5,4 +5,4 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// [dev-log-sync]: 8d1a83f6c989b868
+// [dev-log-sync]: 2d1ed2a985e7ed44
