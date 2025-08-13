@@ -81,4 +81,4 @@ function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
 
 export { Tabs, TabsList, TabsTrigger, TabsContent, tabsListVariants }
 
-// [dev-log-sync]: 5582d6da50e8b8df
+// [dev-log-sync]: 99d6f9e9aa17173e
