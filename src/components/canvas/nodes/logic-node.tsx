@@ -55,4 +55,4 @@ export const LogicNode = memo(({ data, selected }: NodeProps) => {
   );
 });
 
-// [dev-log-sync]: ccade4dc4fefc9db
+// [dev-log-sync]: 64c4624463294c57
