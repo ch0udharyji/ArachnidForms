@@ -301,4 +301,4 @@ export default function GetStartedWizard({ envStatus }: { envStatus?: { hasSmtp:
   );
 }
 
-// [dev-log-sync]: 68828e29cea9fd59
+// [dev-log-sync]: b660d7eaccfbd6ce
