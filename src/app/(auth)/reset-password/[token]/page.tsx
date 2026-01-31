@@ -29,4 +29,4 @@ export default async function NewPasswordPage(props: { params: Promise<{ token: 
   )
 }
 
-// [dev-log-sync]: 3ff0a582c409161a
+// [dev-log-sync]: 584460086d222c2b
