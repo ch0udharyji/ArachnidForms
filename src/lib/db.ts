@@ -15,4 +15,4 @@ if (process.env.NODE_ENV !== "production") {
   globalThis.prisma = db;
 }
 
-// [dev-log-sync]: 7fd2643ab89aa9ff
+// [dev-log-sync]: 38c00fc7b266467b
