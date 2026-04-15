@@ -34,4 +34,4 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
   }
 }
 
-// [dev-log-sync]: d6da947f4b16595f
+// [dev-log-sync]: 8724259d8b751bc2
