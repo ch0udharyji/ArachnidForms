@@ -57,4 +57,4 @@ function Button({
 
 export { Button, buttonVariants }
 
-// [dev-log-sync]: faf419c4b49a0c83
+// [dev-log-sync]: f1a0387fd82822df
