@@ -19,4 +19,4 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
 
 export { Input }
 
-// [dev-log-sync]: 2784463b1a41352e
+// [dev-log-sync]: 6d2d2cd1839f62da
