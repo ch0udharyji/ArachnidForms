@@ -88,84 +88,122 @@ export function ResponseSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-xl overflow-y-auto print:static print:w-full print:max-w-none print:shadow-none print:p-0">
-        <SheetHeader className="print:hidden space-y-4">
-          <div className="flex items-center justify-between">
-            <SheetTitle>Response Details</SheetTitle>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={onPrev} disabled={currentIndex === 0}>
-                <ChevronLeft className="w-4 h-4" />
+      <SheetContent 
+        side="bottom" 
+        className="w-screen h-screen sm:max-w-none max-w-none sm:w-screen m-0 p-0 flex flex-col bg-background/95 backdrop-blur-sm border-none print:static print:w-full print:max-w-none print:shadow-none print:p-0 print:bg-transparent"
+        showCloseButton={false}
+      >
+        <SheetHeader className="print:hidden border-b border-border/50 bg-background/80 backdrop-blur-xl p-4 sm:px-8 sticky top-0 z-10 shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="rounded-full hover:bg-surface">
+                <ChevronLeft className="w-5 h-5" />
               </Button>
-              <span className="text-sm font-medium">
-                {currentIndex + 1} / {totalCount}
-              </span>
-              <Button variant="outline" size="icon" onClick={onNext} disabled={currentIndex === totalCount - 1}>
-                <ChevronRight className="w-4 h-4" />
+              <SheetTitle className="text-xl sm:text-2xl font-bold tracking-tight">Response Details</SheetTitle>
+            </div>
+            
+            <div className="flex items-center gap-3 self-end sm:self-auto">
+              <div className="flex items-center bg-surface border border-border rounded-full p-1 shadow-sm">
+                <Button variant="ghost" size="icon" onClick={onPrev} disabled={currentIndex === 0} className="h-8 w-8 rounded-full">
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <span className="text-sm font-medium px-4 text-muted-foreground">
+                  {currentIndex + 1} <span className="opacity-50">/</span> {totalCount}
+                </span>
+                <Button variant="ghost" size="icon" onClick={onNext} disabled={currentIndex === totalCount - 1} className="h-8 w-8 rounded-full">
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="h-6 w-[1px] bg-border mx-1 hidden sm:block"></div>
+              <Button variant="outline" size="sm" onClick={handlePrint} className="hidden sm:flex rounded-full px-4 shadow-sm">
+                <Printer className="w-4 h-4 mr-2" /> Print
+              </Button>
+              <Button variant="destructive" size="sm" onClick={handleDelete} disabled={isDeleting} className="rounded-full px-4 shadow-sm bg-destructive/10 text-destructive hover:bg-destructive hover:text-white border-none">
+                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Trash2 className="w-4 h-4 sm:mr-2" /> <span className="hidden sm:inline">Delete</span></>}
               </Button>
             </div>
-          </div>
-          
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
-            <Button variant="secondary" size="sm" onClick={handlePrint} className="flex-1 sm:flex-none">
-              <Printer className="w-4 h-4 mr-2" /> Print PDF
-            </Button>
-            <Button variant="destructive" size="sm" onClick={handleDelete} disabled={isDeleting} className="flex-1 sm:flex-none bg-destructive/10 text-destructive hover:bg-destructive hover:text-white border-none shadow-none">
-              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Trash2 className="w-4 h-4 mr-2" /> Delete</>}
-            </Button>
           </div>
         </SheetHeader>
 
-        <div className="mt-8 space-y-8 print:mt-0 print:p-8">
-          {/* Respondent Info */}
-          <div className="flex items-start gap-4 p-4 rounded-xl bg-surface/50 border border-border print:border-none print:bg-transparent print:p-0">
-            {response.respondent?.image ? (
-              <img src={response.respondent.image} alt="Avatar" className="w-12 h-12 rounded-full" />
-            ) : (
-              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                <UserCircle className="w-8 h-8" />
+        <div className="flex-1 overflow-y-auto p-4 sm:p-8 print:p-0 print:overflow-visible">
+          <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
+            
+            {/* Left Column: Answers */}
+            <div className="flex-1 space-y-8">
+              <div className="bg-surface/30 rounded-2xl border border-border/50 p-6 sm:p-8 shadow-sm print:border-none print:shadow-none print:p-0">
+                <h4 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground mb-6 flex items-center">
+                  <span className="bg-primary/10 text-primary p-1.5 rounded-lg mr-2"><Save className="w-4 h-4" /></span>
+                  Submitted Answers
+                </h4>
+                <div className="space-y-8">
+                  {columns.map((col, idx) => {
+                    const val = answers[col];
+                    let displayVal = val;
+                    if (Array.isArray(val)) displayVal = val.join(", ");
+                    else if (typeof val === 'object' && val !== null) displayVal = JSON.stringify(val);
+                    else if (val === undefined || val === null) displayVal = <span className="text-muted-foreground/50 italic">No answer provided</span>;
+                    
+                    return (
+                      <div key={col} className="group">
+                        <div className="font-medium text-sm text-foreground/70 mb-2 flex items-center gap-2">
+                          <span className="text-xs font-mono text-muted-foreground bg-surface px-1.5 py-0.5 rounded border border-border/50">{idx + 1}</span>
+                          {col}
+                        </div>
+                        <div className="text-base font-medium bg-background p-4 rounded-xl border border-border/50 shadow-sm print:border-none print:bg-transparent print:p-0 print:shadow-none">
+                          {displayVal}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            )}
-            <div>
-              <h3 className="font-bold text-lg">{response.respondent?.name || "Anonymous User"}</h3>
-              <p className="text-muted-foreground">{response.respondent?.email || "No email provided"}</p>
-              <p className="text-xs text-muted-foreground mt-1">Submitted on {format(new Date(response.submittedAt), 'PPpp')}</p>
             </div>
-          </div>
 
-          {/* Answers */}
-          <div className="space-y-6">
-            <h4 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground border-b border-border pb-2">Answers</h4>
-            {columns.map(col => {
-              const val = answers[col];
-              let displayVal = val;
-              if (Array.isArray(val)) displayVal = val.join(", ");
-              else if (typeof val === 'object' && val !== null) displayVal = JSON.stringify(val);
-              else if (val === undefined || val === null) displayVal = <span className="text-muted-foreground/50 italic">No answer provided</span>;
-              
-              return (
-                <div key={col} className="space-y-1">
-                  <div className="font-medium text-sm text-foreground/80">{col}</div>
-                  <div className="text-base bg-surface/30 p-3 rounded-lg border border-border/50 print:border-none print:bg-transparent print:p-0">
-                    {displayVal}
+            {/* Right Column: Metadata & Notes */}
+            <div className="w-full lg:w-[350px] space-y-6 print:hidden">
+              {/* Respondent Info */}
+              <div className="bg-surface/30 rounded-2xl border border-border/50 p-6 shadow-sm">
+                <h4 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground mb-4">Respondent</h4>
+                <div className="flex items-center gap-4 mb-4">
+                  {response.respondent?.image ? (
+                    <img src={response.respondent.image} alt="Avatar" className="w-14 h-14 rounded-full ring-2 ring-background shadow-sm" />
+                  ) : (
+                    <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center ring-2 ring-background shadow-sm">
+                      <UserCircle className="w-8 h-8" />
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="font-bold text-lg leading-tight">{response.respondent?.name || "Anonymous"}</h3>
+                    <p className="text-sm text-muted-foreground">{response.respondent?.email || "No email"}</p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+                <div className="text-xs text-muted-foreground bg-background p-3 rounded-lg border border-border/50">
+                  <span className="block mb-1 opacity-70">Submitted on</span>
+                  <span className="font-medium text-foreground">{format(new Date(response.submittedAt), 'PPpp')}</span>
+                </div>
+              </div>
 
-          {/* Internal Notes */}
-          <div className="space-y-3 print:hidden pt-6 border-t border-border">
-            <h4 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">Internal Notes</h4>
-            <Textarea
-              placeholder="Add private notes about this response..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="min-h-[100px] resize-y"
-            />
-            <Button onClick={handleSaveNotes} disabled={isSavingNotes || notes === response.internalNotes} className="w-full">
-              {isSavingNotes ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-              Save Notes
-            </Button>
+              {/* Internal Notes */}
+              <div className="bg-surface/30 rounded-2xl border border-border/50 p-6 shadow-sm">
+                <h4 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground mb-4">Internal Notes</h4>
+                <div className="space-y-3">
+                  <Textarea
+                    placeholder="Add private notes, tags, or status about this response..."
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    className="min-h-[150px] resize-y bg-background border-border/50 focus:border-primary/50"
+                  />
+                  <Button 
+                    onClick={handleSaveNotes} 
+                    disabled={isSavingNotes || notes === response.internalNotes} 
+                    className="w-full rounded-xl shadow-sm"
+                  >
+                    {isSavingNotes ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                    {notes === response.internalNotes ? "Saved" : "Save Notes"}
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </SheetContent>
