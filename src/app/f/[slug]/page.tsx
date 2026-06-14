@@ -9,6 +9,8 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
     where: { slug: params.slug },
   });
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://anachnidforms.vercel.app";
+
   if (!form) {
     return {
       title: "Form Not Found | ArachnidForms",
@@ -16,28 +18,38 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
     };
   }
 
+  const title = form.title || "Untitled Form";
+  const description = form.description || "Fill out this form created with ArachnidForms.";
+  const ogImageUrl = `${appUrl}/api/f/${params.slug}/og`;
+  const formUrl = `${appUrl}/f/${params.slug}`;
+
   return {
-    title: `${form.title} | ArachnidForms`,
-    description: form.description || "Please fill out this form.",
+    title: `${title} | ArachnidForms`,
+    description: description,
+    alternates: {
+      canonical: formUrl,
+    },
     openGraph: {
-      title: form.title,
-      description: form.description || "Please fill out this form.",
+      title: title,
+      description: description,
+      url: formUrl,
       type: "website",
       siteName: "ArachnidForms",
       images: [
         {
-          url: "/header.png",
+          url: ogImageUrl,
           width: 1200,
           height: 630,
-          alt: `${form.title} Header Image`,
+          alt: `${title} Cover Image`,
         }
       ]
     },
     twitter: {
       card: "summary_large_image",
-      title: form.title,
-      description: form.description || "Please fill out this form.",
-      images: ["/header.png"],
+      title: title,
+      description: description,
+      images: [ogImageUrl],
+      creator: "@arachnidforms",
     }
   };
 }
