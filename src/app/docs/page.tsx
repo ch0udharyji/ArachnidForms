@@ -75,7 +75,7 @@ export default function DocsPage() {
             <div className="bg-card border border-border/50 rounded-lg p-4 font-mono text-sm overflow-x-auto text-muted-foreground">
               <pre><code>{`DATABASE_URL="postgresql://user:password@localhost:5432/arachnidforms?schema=public"
 
-NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_URL="https://anachnidforms.vercel.app"
 NEXTAUTH_SECRET="generate-a-secure-secret-here"
 
 DISCORD_CLIENT_ID=""
@@ -101,7 +101,7 @@ S3_SECRET_ACCESS_KEY=""
 S3_REGION=""
 S3_BUCKET_NAME=""
 
-NEXT_PUBLIC_APP_URL="http://localhost:3000"`}</code></pre>
+NEXT_PUBLIC_APP_URL="https://anachnidforms.vercel.app"`}</code></pre>
             </div>
           </section>
 
@@ -135,7 +135,7 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"`}</code></pre>
               <code>npm run dev</code>
             </div>
             <p className="text-muted-foreground mt-4">
-              Open <strong>http://localhost:3000</strong> in your browser to see your instance live.
+              Open <strong>https://anachnidforms.vercel.app</strong> in your browser to see your instance live.
             </p>
           </section>
 
