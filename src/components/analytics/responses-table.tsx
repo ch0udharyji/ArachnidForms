@@ -4,9 +4,12 @@ import { useState } from "react";
 import { formatDistanceToNow, format } from "date-fns";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { ResponseSheet } from "./response-sheet";
 
-export function ResponsesTable({ responses, columns }: { responses: any[], columns: string[] }) {
+export function ResponsesTable({ responses: initialResponses, columns }: { responses: any[], columns: string[] }) {
+  const [responses, setResponses] = useState(initialResponses);
   const [search, setSearch] = useState("");
+  const [selectedResponseIndex, setSelectedResponseIndex] = useState<number | null>(null);
 
   const filteredResponses = responses.filter((r) => {
     if (!search) return true;
@@ -28,6 +31,14 @@ export function ResponsesTable({ responses, columns }: { responses: any[], colum
     
     return false;
   });
+
+  const handleDelete = (id: string) => {
+    setResponses(prev => prev.filter(r => r.id !== id));
+  };
+
+  const handleUpdateNotes = (id: string, notes: string) => {
+    setResponses(prev => prev.map(r => r.id === id ? { ...r, internalNotes: notes } : r));
+  };
 
   return (
     <div className="space-y-4">
@@ -65,18 +76,22 @@ export function ResponsesTable({ responses, columns }: { responses: any[], colum
                     No responses match your search.
                   </td>
                 </tr>
-              ) : filteredResponses.map(response => {
+              ) : filteredResponses.map((response, idx) => {
                 const answers = response.answers as Record<string, any>;
                 return (
-                  <tr key={response.id} className="hover:bg-surface/50 transition-colors">
+                  <tr 
+                    key={response.id} 
+                    className="hover:bg-surface/50 transition-colors cursor-pointer group"
+                    onClick={() => setSelectedResponseIndex(idx)}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       {response.respondent ? (
                         <div>
-                          <div className="font-medium text-foreground">{response.respondent.name || "Anonymous User"}</div>
+                          <div className="font-medium text-foreground group-hover:text-primary transition-colors">{response.respondent.name || "Anonymous User"}</div>
                           <div className="text-xs text-muted-foreground">{response.respondent.email}</div>
                         </div>
                       ) : (
-                        <span className="text-muted-foreground italic">Anonymous</span>
+                        <span className="text-muted-foreground italic group-hover:text-primary transition-colors">Anonymous</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-muted-foreground" title={format(new Date(response.submittedAt), 'PPpp')}>
@@ -102,6 +117,19 @@ export function ResponsesTable({ responses, columns }: { responses: any[], colum
           </table>
         </div>
       </div>
+
+      <ResponseSheet
+        open={selectedResponseIndex !== null}
+        onOpenChange={(open) => !open && setSelectedResponseIndex(null)}
+        response={selectedResponseIndex !== null ? filteredResponses[selectedResponseIndex] : null}
+        columns={columns}
+        totalCount={filteredResponses.length}
+        currentIndex={selectedResponseIndex ?? 0}
+        onNext={() => setSelectedResponseIndex(prev => prev !== null && prev < filteredResponses.length - 1 ? prev + 1 : prev)}
+        onPrev={() => setSelectedResponseIndex(prev => prev !== null && prev > 0 ? prev - 1 : prev)}
+        onDelete={handleDelete}
+        onUpdateNotes={handleUpdateNotes}
+      />
     </div>
   );
 }

@@ -88,6 +88,7 @@ model FormResponse {
   submittedAt DateTime @default(now())
   metadata    Json?
   respondentId String?
+  internalNotes String? @db.Text
 
   form        Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
   respondent  User?    @relation("SubmittedResponses", fields: [respondentId], references: [id], onDelete: SetNull)
