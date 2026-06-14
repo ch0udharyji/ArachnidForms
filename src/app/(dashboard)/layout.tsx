@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import { UserMenu } from "@/components/shared/user-menu"
 import { SessionTimer } from "@/components/shared/session-timer"
 import { db } from "@/lib/db"
+import { MobileNav } from "@/components/shared/mobile-nav"
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
@@ -25,9 +26,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="flex h-screen bg-background text-foreground">
-      <Sidebar />
+      <Sidebar className="hidden md:flex border-r border-border/50" />
       <div className="flex-1 flex flex-col overflow-hidden relative">
-        <header className="h-16 border-b border-border/50 flex items-center justify-end px-6 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30">
+        <header className="h-16 border-b border-border/50 flex items-center justify-between md:justify-end px-4 md:px-6 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30">
+          
+          <MobileNav />
+
           <div className="flex items-center gap-4">
             {session.user.isTestAccount && session.user.testExpiry && (
               <SessionTimer expiry={session.user.testExpiry} />

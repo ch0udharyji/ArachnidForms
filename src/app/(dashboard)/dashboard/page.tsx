@@ -156,7 +156,7 @@ export default async function DashboardPage() {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                     <Link href={`/forms/${form.id}/builder`} className="w-full">
                       <Button variant="secondary" className="w-full text-xs h-8 bg-background hover:bg-primary hover:text-primary-foreground group-hover:border-primary/20">
                         <Settings className="w-3.5 h-3.5 mr-1.5" /> Edit Builder

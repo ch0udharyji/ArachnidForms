@@ -161,19 +161,19 @@ export function FormList({ forms: initialForms }: { forms: any[] }) {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex gap-2 w-full">
-                  <Link href={`/forms/${form.id}/builder`} className="flex-1">
+              <div className="flex items-start sm:items-center justify-between gap-2 mt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full">
+                  <Link href={`/forms/${form.id}/builder`} className="w-full">
                     <Button variant="secondary" className="w-full text-xs h-9 bg-background hover:bg-primary hover:text-primary-foreground group-hover:border-primary/20">
                       <Settings className="w-3.5 h-3.5 mr-1.5" /> Edit
                     </Button>
                   </Link>
-                  <Link href={`/forms/${form.id}/responses`} className="flex-1">
+                  <Link href={`/forms/${form.id}/responses`} className="w-full">
                     <Button variant="secondary" className="w-full text-xs h-9 bg-background hover:bg-primary hover:text-primary-foreground group-hover:border-primary/20">
                       <BarChart className="w-3.5 h-3.5 mr-1.5" /> Results
                     </Button>
                   </Link>
-                  <Button variant="secondary" className="flex-1 text-xs h-9 bg-background hover:bg-surface" onClick={() => copyShareLink(form.slug || form.id)}>
+                  <Button variant="secondary" className="w-full text-xs h-9 bg-background hover:bg-surface" onClick={() => copyShareLink(form.slug || form.id)}>
                     <Share2 className="w-3.5 h-3.5 mr-1.5" /> Share
                   </Button>
                 </div>
