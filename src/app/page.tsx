@@ -3,8 +3,12 @@ import { Button } from '@/components/ui/button'
 
 import { ArrowRight, Sparkles } from 'lucide-react'
 import Image from 'next/image'
+import { auth } from '@/lib/auth'
+import { UserMenu } from '@/components/shared/user-menu'
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background text-foreground relative font-sans selection:bg-primary/30">
       
@@ -20,14 +24,25 @@ export default function Home() {
         </div>
         
         <div className="flex items-center gap-4">
-          <Link href="/login" className="text-sm font-semibold hover:text-primary transition-colors hidden sm:block">
-            Sign In
-          </Link>
-          <Link href="/register">
-            <Button className="rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all font-bold px-5 h-8 text-sm">
-              Get Started
-            </Button>
-          </Link>
+          {session?.user ? (
+            <>
+              <Link href="/dashboard" className="text-sm font-semibold hover:text-primary transition-colors hidden sm:block">
+                Dashboard
+              </Link>
+              <UserMenu user={session.user} />
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm font-semibold hover:text-primary transition-colors hidden sm:block">
+                Sign In
+              </Link>
+              <Link href="/register">
+                <Button className="rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all font-bold px-5 h-8 text-sm">
+                  Get Started
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
@@ -48,11 +63,19 @@ export default function Home() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 ease-out fill-mode-both">
-          <Link href="/register" className="w-full sm:w-auto">
-            <Button size="lg" className="w-full sm:w-auto rounded-full h-12 px-8 text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300">
-              Start Building Free <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </Link>
+          {session?.user ? (
+            <Link href="/dashboard" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto rounded-full h-12 px-8 text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300">
+                Go to Dashboard <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/register" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto rounded-full h-12 px-8 text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300">
+                Start Building Free <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          )}
           <Link href="/docs" className="w-full sm:w-auto">
             <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-full h-12 px-8 text-base font-bold border-2 border-border/50 hover:bg-surface hover:border-border transition-all duration-300">
               Docs & Setup
