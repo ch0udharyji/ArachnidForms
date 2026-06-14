@@ -201,12 +201,12 @@ export function PublicFormClient({ slug, title, canvasData, session, previousRes
   if (isSubmitted) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center py-12 px-4">
-        <div className="max-w-md w-full space-y-8 bg-surface/30 backdrop-blur-xl p-10 rounded-3xl shadow-2xl border border-border/50 text-center animate-in fade-in zoom-in duration-500">
-          <div className="w-20 h-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10" />
+        <div className="max-w-4xl w-full space-y-12 text-center animate-in fade-in zoom-in duration-500">
+          <div className="w-24 h-24 sm:w-32 sm:h-32 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-green-500/20">
+            <CheckCircle2 className="w-12 h-12 sm:w-16 sm:h-16" />
           </div>
-          <h2 className="text-3xl font-extrabold tracking-tight">Thank You!</h2>
-          <p className="mt-2 text-lg text-muted-foreground">
+          <h2 className="text-5xl sm:text-7xl font-extrabold tracking-tight text-foreground">Thank You!</h2>
+          <p className="mt-4 text-2xl sm:text-3xl text-muted-foreground/80 font-medium">
             {previousResponse ? "Your response has been successfully updated." : "Your response has been successfully submitted."}
           </p>
         </div>
@@ -234,31 +234,31 @@ export function PublicFormClient({ slug, title, canvasData, session, previousRes
       <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none" />
 
-      <div className="w-full max-w-3xl relative z-10 space-y-8">
+      <div className="w-full max-w-4xl relative z-10 space-y-8 px-4 sm:px-12">
         {history.length > 0 && (
-          <Button variant="ghost" onClick={handleBack} className="absolute -top-16 left-0 text-muted-foreground hover:text-foreground">
+          <Button variant="ghost" onClick={handleBack} className="absolute -top-24 left-4 sm:left-12 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
           </Button>
         )}
 
         {previousResponse && (
-          <div className="absolute -top-16 right-0 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium border border-primary/20 flex items-center">
+          <div className="absolute -top-24 right-4 sm:right-12 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium border border-primary/20 flex items-center">
             <Sparkles className="w-3.5 h-3.5 mr-1.5" />
             Editing previous response {previousResponse.editCount > 0 && `(Edited ${previousResponse.editCount}x)`}
           </div>
         )}
 
-        <div key={animationKey} className="animate-in fade-in slide-in-from-bottom-8 duration-500 fill-mode-both w-full">
+        <div key={animationKey} className="animate-in fade-in slide-in-from-bottom-12 duration-700 fill-mode-both w-full">
           {isEndNode ? (
-            <div className="bg-surface/30 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-border/50 text-center space-y-6">
-              <h2 className="text-3xl font-extrabold tracking-tight">Ready to submit?</h2>
+            <div className="w-full text-center space-y-12 py-12">
+              <h2 className="text-5xl sm:text-7xl font-extrabold tracking-tight text-foreground">Ready to submit?</h2>
               
               {session?.user?.isTestAccount ? (
-                <div className="p-3 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl text-sm font-medium leading-relaxed">
+                <div className="p-4 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-2xl text-lg sm:text-xl font-medium leading-relaxed max-w-2xl mx-auto">
                   Test accounts cannot submit forms. Please sign in with a real account to continue.
                 </div>
               ) : (
-                <p className="text-muted-foreground">Review your answers by going back, or submit them now.</p>
+                <p className="text-2xl sm:text-3xl text-muted-foreground/80">Review your answers by going back, or submit them now.</p>
               )}
               
               {error && (
@@ -271,7 +271,7 @@ export function PublicFormClient({ slug, title, canvasData, session, previousRes
                 onClick={session?.user?.isTestAccount ? () => signIn(undefined, { callbackUrl: pathname }) : handleSubmit} 
                 disabled={isSubmitting}
                 className={cn(
-                  "h-12 px-8 text-base font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all w-full sm:w-auto",
+                  "h-16 sm:h-20 px-10 sm:px-14 text-xl sm:text-3xl font-bold rounded-2xl shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all w-full sm:w-auto mt-8",
                   isSubmitting && "opacity-70 cursor-not-allowed"
                 )}
               >
@@ -287,25 +287,27 @@ export function PublicFormClient({ slug, title, canvasData, session, previousRes
               </Button>
             </div>
           ) : (
-            <div className="bg-surface/30 backdrop-blur-xl p-8 sm:p-12 rounded-3xl shadow-2xl border border-border/50 transition-all">
-              <div className="space-y-6">
+            <div className="w-full transition-all py-8 sm:py-16">
+              <div className="space-y-12">
                 <div>
-                  <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground flex items-baseline gap-3 leading-tight">
-                    <span className="text-primary/50 text-2xl">{history.length + 1}.</span> 
-                    {currentNode?.data?.label || "Untitled Question"}
-                    {currentNode?.data?.required && <span className="text-primary text-3xl leading-none">*</span>}
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-foreground flex items-baseline gap-4 leading-tight">
+                    <span className="text-primary/50 text-3xl sm:text-4xl flex-shrink-0">{history.length + 1}.</span> 
+                    <span>
+                      {currentNode?.data?.label || "Untitled Question"}
+                      {currentNode?.data?.required && <span className="text-primary text-4xl leading-none ml-2">*</span>}
+                    </span>
                   </h1>
                   {currentNode?.data?.description && (
-                    <p className="mt-4 text-muted-foreground/80 text-xl pl-10">{currentNode.data.description}</p>
+                    <p className="mt-6 text-muted-foreground/80 text-xl sm:text-2xl pl-12 sm:pl-16 font-medium">{currentNode.data.description}</p>
                   )}
                 </div>
 
-                <div className="pt-8 pl-0 sm:pl-10">
+                <div className="pt-8 pl-12 sm:pl-16">
                   {currentNode?.data?.questionType === 'long_text' || currentNode?.data?.questionType === 'textarea' ? (
                     <Textarea 
                       autoFocus
                       placeholder="Type your answer here..."
-                      className="min-h-[160px] text-xl p-6 bg-background/50 border-border focus:border-primary focus:ring-primary/20 resize-none rounded-2xl"
+                      className="min-h-[160px] sm:min-h-[200px] text-2xl sm:text-3xl p-0 py-4 bg-transparent border-b-2 border-x-0 border-t-0 border-border focus:border-primary focus:ring-0 resize-none rounded-none shadow-none"
                       value={answersById[currentNode.id] || ""}
                       onChange={(e) => handleInputChange(currentNode.id, currentNode.data.label as string, e.target.value)}
                       onKeyDown={(e) => {
@@ -318,7 +320,7 @@ export function PublicFormClient({ slug, title, canvasData, session, previousRes
                   ) : currentNode?.data?.questionType === 'dropdown' || currentNode?.data?.questionType === 'multiple_choice' || currentNode?.data?.questionType === 'select' ? (
                     <select 
                       autoFocus
-                      className="w-full h-16 px-6 text-xl bg-background/50 border border-border rounded-2xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none appearance-none"
+                      className="w-full h-16 sm:h-24 px-0 text-3xl sm:text-4xl font-medium bg-transparent border-b-2 border-x-0 border-t-0 border-border rounded-none focus:border-primary focus:ring-0 outline-none appearance-none cursor-pointer"
                       value={answersById[currentNode.id] || ""}
                       onChange={(e) => handleInputChange(currentNode.id, currentNode.data.label as string, e.target.value)}
                     >
@@ -328,11 +330,11 @@ export function PublicFormClient({ slug, title, canvasData, session, previousRes
                       ))}
                     </select>
                   ) : currentNode?.data?.questionType === 'radio' ? (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {(currentNode.data.options || ['Yes', 'No']).map((opt: string) => (
                         <label key={opt} className={cn(
-                          "flex items-center space-x-3 p-4 border rounded-2xl cursor-pointer transition-all hover:bg-primary/5",
-                          answersById[currentNode.id] === opt ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border bg-background/50"
+                          "flex items-center space-x-6 p-6 sm:p-8 border-2 rounded-2xl sm:rounded-3xl cursor-pointer transition-all hover:bg-primary/5",
+                          answersById[currentNode.id] === opt ? "border-primary bg-primary/5 shadow-lg shadow-primary/10" : "border-border/50 bg-background/50"
                         )}>
                           <input 
                             type="radio" 
@@ -340,22 +342,22 @@ export function PublicFormClient({ slug, title, canvasData, session, previousRes
                             value={opt}
                             checked={answersById[currentNode.id] === opt}
                             onChange={(e) => handleInputChange(currentNode.id, currentNode.data.label as string, e.target.value)}
-                            className="w-5 h-5 text-primary border-border focus:ring-primary"
+                            className="w-6 h-6 sm:w-8 sm:h-8 text-primary border-border focus:ring-primary bg-transparent"
                           />
-                          <span className="text-xl font-medium">{opt}</span>
+                          <span className="text-2xl sm:text-3xl font-medium text-foreground/90">{opt}</span>
                         </label>
                       ))}
                     </div>
                   ) : currentNode?.data?.questionType === 'rating' ? (
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-4 sm:gap-6">
                       {[1, 2, 3, 4, 5].map((num) => (
                         <button
                           key={num}
                           type="button"
                           onClick={() => handleInputChange(currentNode.id, currentNode.data.label as string, num)}
                           className={cn(
-                            "w-14 h-14 rounded-2xl text-2xl font-bold transition-all border",
-                            answersById[currentNode.id] === num ? "bg-primary text-primary-foreground border-primary scale-110" : "bg-background/50 border-border text-muted-foreground hover:border-primary hover:text-foreground"
+                            "w-16 h-16 sm:w-24 sm:h-24 rounded-2xl sm:rounded-3xl text-3xl sm:text-4xl font-bold transition-all border-2",
+                            answersById[currentNode.id] === num ? "bg-primary text-primary-foreground border-primary scale-110 shadow-xl shadow-primary/30" : "bg-background/50 border-border/50 text-muted-foreground hover:border-primary/50 hover:text-foreground"
                           )}
                         >
                           {num}
@@ -366,8 +368,8 @@ export function PublicFormClient({ slug, title, canvasData, session, previousRes
                     <Input 
                       autoFocus
                       type={currentNode?.data?.questionType === 'email' ? 'email' : currentNode?.data?.questionType === 'number' ? 'number' : 'text'}
-                      placeholder="Your answer"
-                      className="h-16 px-6 text-xl bg-background/50 border-border focus:border-primary focus:ring-primary/20 rounded-2xl"
+                      placeholder="Type your answer here..."
+                      className="h-16 sm:h-24 px-0 text-3xl sm:text-4xl font-medium bg-transparent border-b-2 border-x-0 border-t-0 border-border focus:border-primary focus:ring-0 rounded-none shadow-none"
                       value={answersById[currentNode.id] || ""}
                       onChange={(e) => handleInputChange(currentNode.id, currentNode.data.label as string, e.target.value)}
                       onKeyDown={(e) => {
@@ -380,16 +382,16 @@ export function PublicFormClient({ slug, title, canvasData, session, previousRes
                   )}
                 </div>
 
-                <div className="pt-10 flex items-center gap-4 pl-0 sm:pl-10">
+                <div className="pt-16 flex items-center gap-6 pl-12 sm:pl-16">
                   <Button 
                     onClick={handleNext}
                     disabled={currentNode?.data?.required && !answersById[currentNode.id]}
-                    className="h-14 px-8 text-lg font-bold rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90"
+                    className="h-16 sm:h-20 px-10 sm:px-14 text-xl sm:text-2xl font-bold rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all"
                   >
-                    OK <ChevronRight className="w-5 h-5 ml-2" />
+                    OK <ChevronRight className="w-6 h-6 ml-3" />
                   </Button>
-                  <span className="text-sm text-muted-foreground hidden sm:inline-flex items-center gap-1">
-                    press <kbd className="font-mono bg-background px-1.5 py-0.5 rounded border">Enter</kbd> ↵
+                  <span className="text-base sm:text-lg text-muted-foreground/60 font-medium hidden sm:inline-flex items-center gap-2">
+                    press <kbd className="font-mono bg-background/50 px-2 py-1 rounded border border-border/50 text-foreground/70 shadow-sm">Enter</kbd> ↵
                   </span>
                 </div>
               </div>
