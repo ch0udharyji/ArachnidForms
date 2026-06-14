@@ -71,24 +71,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.isTestAccount = user.isTestAccount;
         if (user.isTestAccount) {
-          token.testExpiry = Date.now() + 30 * 60 * 1000; // 30 minutes absolute max
-          token.lastActivity = Date.now();
+          token.testExpiry = Date.now() + 15 * 60 * 1000; // 15 minutes absolute max
         }
       }
       
       if (token.isTestAccount) {
         const now = Date.now();
         const expiry = token.testExpiry as number;
-        const lastActivity = (token.lastActivity as number) || now;
 
-        // Check if absolutely expired (30 mins passed)
-        if (now > expiry) return {};
-
-        // Check if idle for more than 5 minutes
-        if (now - lastActivity > 5 * 60 * 1000) return {};
-
-        // Update last activity to keep it alive
-        token.lastActivity = now;
+        // Check if absolute expiry (15 mins passed)
+        if (now > expiry) {
+          // Delete test user from DB asynchronously
+          if (token.sub) {
+            db.user.delete({ where: { id: token.sub } }).catch(() => {});
+          }
+          return {}; // Invalidate token
+        }
       }
       
       return token;
@@ -105,9 +103,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token.isTestAccount) {
         const now = Date.now();
         const isExpired = now > (token.testExpiry as number);
-        const isIdle = now - (token.lastActivity as number) > 5 * 60 * 1000;
         
-        if (isExpired || isIdle) {
+        if (isExpired) {
           (session as any).expires = "1970-01-01T00:00:00.000Z";
         }
       }

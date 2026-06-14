@@ -31,7 +31,13 @@ export default async function BuilderPage(props: { params: Promise<{ id: string 
 
   return (
     <div className="h-screen w-screen flex flex-col bg-background">
-      <BuilderCanvas formId={params.id} formSlug={form.slug} initialData={form.canvasData} integrations={{ hasStripe, hasS3 }} />
+      <BuilderCanvas 
+        formId={params.id} 
+        formSlug={form.slug} 
+        initialData={form.canvasData} 
+        integrations={{ hasStripe, hasS3 }} 
+        isTestAccount={session.user.isTestAccount}
+      />
     </div>
   )
 }

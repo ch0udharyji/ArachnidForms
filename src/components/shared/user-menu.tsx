@@ -65,11 +65,17 @@ export function UserMenu({ user }: { user: any }) {
         <DropdownMenuSeparator className="bg-white/5 my-2" />
         
         <DropdownMenuGroup className="space-y-1">
-          <DropdownMenuItem className="cursor-pointer rounded-lg hover:bg-white/5 focus:bg-white/5 transition-colors" onClick={() => signOut({ callbackUrl: "/login" })}>
+          <DropdownMenuItem className="cursor-pointer rounded-lg hover:bg-white/5 focus:bg-white/5 transition-colors" onClick={async () => {
+            if (user?.isTestAccount) await fetch("/api/auth/delete-test-account", { method: "POST" });
+            signOut({ callbackUrl: "/login" });
+          }}>
             <SwitchCamera className="mr-3 h-4 w-4 text-muted-foreground" />
             <span>Switch Profile</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10 rounded-lg transition-colors" onClick={() => signOut({ callbackUrl: "/" })}>
+          <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10 rounded-lg transition-colors" onClick={async () => {
+            if (user?.isTestAccount) await fetch("/api/auth/delete-test-account", { method: "POST" });
+            signOut({ callbackUrl: "/" });
+          }}>
             <LogOut className="mr-3 h-4 w-4 text-destructive/70" />
             <span>Log out</span>
           </DropdownMenuItem>

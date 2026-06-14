@@ -49,7 +49,7 @@ const initialNodes: Node[] = [
 
 const getId = () => `node_${Math.random().toString(36).substring(2, 9)}`;
 
-function CanvasArea({ formId, formSlug, initialData, integrations }: { formId?: string, formSlug?: string, initialData?: any, integrations?: any }) {
+function CanvasArea({ formId, formSlug, initialData, integrations, isTestAccount }: { formId?: string, formSlug?: string, initialData?: any, integrations?: any, isTestAccount?: boolean }) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialData && Array.isArray(initialData.nodes) && initialData.nodes.length > 0 ? initialData.nodes : initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialData && Array.isArray(initialData.edges) && initialData.edges.length > 0 ? initialData.edges : []);
@@ -64,8 +64,8 @@ function CanvasArea({ formId, formSlug, initialData, integrations }: { formId?: 
   const [isSaving, setIsSaving] = useState(false);
   
   const [shareConfig, setShareConfig] = useState({
-    expiresIn: "never",
-    maxResponses: ""
+    expiresIn: isTestAccount ? '15m' : '7d',
+    maxResponses: ''
   });
   const [isPublished, setIsPublished] = useState(false);
 
@@ -406,58 +406,68 @@ function CanvasArea({ formId, formSlug, initialData, integrations }: { formId?: 
 
           {!isPublished ? (
             <div className="space-y-6 py-4">
-              <div className="group border border-border bg-surface/50 rounded-xl p-4 transition-all hover:bg-surface/80 hover:border-primary/30">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-primary/10 text-primary rounded-lg">
-                    <Globe className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <Label className="text-base font-semibold">Form Lifespan</Label>
-                    <p className="text-xs text-muted-foreground">When should this form automatically self-destruct?</p>
-                  </div>
+              {isTestAccount ? (
+                <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-xl text-center space-y-2">
+                  <h3 className="font-bold">Test Mode Active</h3>
+                  <p className="text-sm">Forms published with a test account will automatically expire and be permanently deleted in 15 minutes.</p>
+                  <p className="text-sm">Sign up with a real account to unlock custom expirations, response limits, and permanent URLs.</p>
                 </div>
-                <Select
-                  value={shareConfig.expiresIn}
-                  onValueChange={(val) => setShareConfig({ ...shareConfig, expiresIn: val || '7d' })}
-                >
-                  <SelectTrigger className="h-10 text-sm bg-background/50 border-input font-medium focus:ring-primary/20">
-                    <SelectValue placeholder="Select expiration" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-card">
-                    <SelectItem value="never">Keep Alive Forever</SelectItem>
-                    <SelectItem value="15m">15 Minutes (High Security)</SelectItem>
-                    <SelectItem value="1h">1 Hour</SelectItem>
-                    <SelectItem value="24h">24 Hours</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              ) : (
+                <>
+                  <div className="group border border-border bg-surface/50 rounded-xl p-4 transition-all hover:bg-surface/80 hover:border-primary/30">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 bg-primary/10 text-primary rounded-lg">
+                        <Globe className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <Label className="text-base font-semibold">Form Lifespan</Label>
+                        <p className="text-xs text-muted-foreground">When should this form automatically self-destruct?</p>
+                      </div>
+                    </div>
+                    <Select
+                      value={shareConfig.expiresIn}
+                      onValueChange={(val) => setShareConfig({ ...shareConfig, expiresIn: val || '7d' })}
+                    >
+                      <SelectTrigger className="h-10 text-sm bg-background/50 border-input font-medium focus:ring-primary/20">
+                        <SelectValue placeholder="Select expiration" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card">
+                        <SelectItem value="never">Keep Alive Forever</SelectItem>
+                        <SelectItem value="15m">15 Minutes (High Security)</SelectItem>
+                        <SelectItem value="1h">1 Hour</SelectItem>
+                        <SelectItem value="24h">24 Hours</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div className="group border border-border bg-surface/50 rounded-xl p-4 transition-all hover:bg-surface/80 hover:border-primary/30">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-primary/10 text-primary rounded-lg">
-                    <Hash className="w-5 h-5" />
+                  <div className="group border border-border bg-surface/50 rounded-xl p-4 transition-all hover:bg-surface/80 hover:border-primary/30">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 bg-primary/10 text-primary rounded-lg">
+                        <Hash className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <Label className="text-base font-semibold">Submission Cap</Label>
+                        <p className="text-xs text-muted-foreground">Maximum allowed submissions before closing.</p>
+                      </div>
+                    </div>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        min="1"
+                        placeholder="Unlimited"
+                        className="h-10 pl-4 bg-background/50 border-input font-mono focus-visible:ring-primary/20"
+                        value={shareConfig.maxResponses}
+                        onChange={(e) => setShareConfig({ ...shareConfig, maxResponses: e.target.value })}
+                      />
+                      {shareConfig.maxResponses && (
+                        <span className="absolute right-3 top-2.5 text-xs font-semibold tracking-wide text-primary uppercase">
+                          Responses
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <Label className="text-base font-semibold">Submission Cap</Label>
-                    <p className="text-xs text-muted-foreground">Maximum allowed submissions before closing.</p>
-                  </div>
-                </div>
-                <div className="relative">
-                  <Input
-                    type="number"
-                    min="1"
-                    placeholder="Unlimited"
-                    className="h-10 pl-4 bg-background/50 border-input font-mono focus-visible:ring-primary/20"
-                    value={shareConfig.maxResponses}
-                    onChange={(e) => setShareConfig({ ...shareConfig, maxResponses: e.target.value })}
-                  />
-                  {shareConfig.maxResponses && (
-                    <span className="absolute right-3 top-2.5 text-xs font-semibold tracking-wide text-primary uppercase">
-                      Responses
-                    </span>
-                  )}
-                </div>
-              </div>
+                </>
+              )}
             </div>
           ) : (
             <div className="space-y-6 py-4 flex flex-col items-center">
@@ -502,11 +512,11 @@ function CanvasArea({ formId, formSlug, initialData, integrations }: { formId?: 
   );
 }
 
-export function BuilderCanvas({ formId, formSlug, initialData, integrations }: { formId?: string, formSlug?: string, initialData?: any, integrations?: any }) {
+export function BuilderCanvas({ formId, formSlug, initialData, integrations, isTestAccount }: { formId?: string, formSlug?: string, initialData?: any, integrations?: any, isTestAccount?: boolean }) {
   return (
     <div className="w-full h-full flex flex-col">
       <ReactFlowProvider>
-        <CanvasArea formId={formId} formSlug={formSlug} initialData={initialData} integrations={integrations} />
+        <CanvasArea formId={formId} formSlug={formSlug} initialData={initialData} integrations={integrations} isTestAccount={isTestAccount} />
       </ReactFlowProvider>
     </div>
   );
