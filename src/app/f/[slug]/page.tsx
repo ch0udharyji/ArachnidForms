@@ -42,8 +42,11 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   };
 }
 
+import { auth } from "@/lib/auth";
+
 export default async function PublicFormRenderer(props: { params: Promise<{ slug: string }> }) {
   const params = await props.params;
+  const session = await auth();
   const form = await db.form.findUnique({
     where: { slug: params.slug },
   });
@@ -62,6 +65,7 @@ export default async function PublicFormRenderer(props: { params: Promise<{ slug
       slug={params.slug} 
       title={form.title} 
       canvasData={canvasData} 
+      session={session}
     />
   );
 }

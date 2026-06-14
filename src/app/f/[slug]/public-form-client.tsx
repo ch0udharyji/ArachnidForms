@@ -7,6 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, CheckCircle2, ChevronRight, Loader2, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { signIn } from "next-auth/react";
+import { usePathname } from "next/navigation";
+
 interface FormNode {
   id: string;
   type: string;
@@ -20,13 +23,24 @@ interface FormNode {
   };
 }
 
-export function PublicFormClient({ slug, title, canvasData }: { slug: string, title: string, canvasData: any }) {
+export function PublicFormClient({ slug, title, canvasData, session }: { slug: string, title: string, canvasData: any, session: any }) {
+  const pathname = usePathname();
   const [hasVisited, setHasVisited] = useState(false);
   const [answersById, setAnswersById] = useState<Record<string, any>>({});
   const [answersByLabel, setAnswersByLabel] = useState<Record<string, any>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Load from local storage on mount
+  useEffect(() => {
+    try {
+      const savedById = localStorage.getItem(`form-draft-${slug}-id`);
+      const savedByLabel = localStorage.getItem(`form-draft-${slug}-label`);
+      if (savedById) setAnswersById(JSON.parse(savedById));
+      if (savedByLabel) setAnswersByLabel(JSON.parse(savedByLabel));
+    } catch (e) {}
+  }, [slug]);
 
   useEffect(() => {
     if (!hasVisited) {
@@ -104,6 +118,14 @@ export function PublicFormClient({ slug, title, canvasData }: { slug: string, ti
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!session?.user) {
+      // Save state before redirecting to login
+      localStorage.setItem(`form-draft-${slug}-id`, JSON.stringify(answersById));
+      localStorage.setItem(`form-draft-${slug}-label`, JSON.stringify(answersByLabel));
+      return signIn(undefined, { callbackUrl: pathname });
+    }
+
     setIsSubmitting(true);
     setError(null);
 
@@ -118,6 +140,9 @@ export function PublicFormClient({ slug, title, canvasData }: { slug: string, ti
       if (!res.ok) throw new Error(data.error || "Failed to submit form");
 
       setIsSubmitted(true);
+      // Clear draft on success
+      localStorage.removeItem(`form-draft-${slug}-id`);
+      localStorage.removeItem(`form-draft-${slug}-label`);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -126,8 +151,14 @@ export function PublicFormClient({ slug, title, canvasData }: { slug: string, ti
   };
 
   const handleInputChange = (nodeId: string, label: string, value: any) => {
-    setAnswersById(prev => ({ ...prev, [nodeId]: value }));
-    setAnswersByLabel(prev => ({ ...prev, [label]: value }));
+    const newAnswersById = { ...answersById, [nodeId]: value };
+    const newAnswersByLabel = { ...answersByLabel, [label]: value };
+    setAnswersById(newAnswersById);
+    setAnswersByLabel(newAnswersByLabel);
+    
+    // Save to local storage on change
+    localStorage.setItem(`form-draft-${slug}-id`, JSON.stringify(newAnswersById));
+    localStorage.setItem(`form-draft-${slug}-label`, JSON.stringify(newAnswersByLabel));
   };
 
   const handleNext = () => {
@@ -194,7 +225,16 @@ export function PublicFormClient({ slug, title, canvasData }: { slug: string, ti
           {isEndNode ? (
             <div className="bg-surface/30 backdrop-blur-xl p-10 rounded-3xl shadow-2xl border border-border/50 text-center space-y-8">
               <h2 className="text-4xl font-extrabold tracking-tight">Ready to submit?</h2>
-              <p className="text-lg text-muted-foreground">Review your answers by going back, or submit them now.</p>
+              
+              {!session?.user ? (
+                <p className="text-lg text-muted-foreground">You must sign in to submit your response. Your progress has been saved securely.</p>
+              ) : session.user.isTestAccount ? (
+                <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-xl font-medium">
+                  Test accounts are not allowed to submit forms. Please use a real account.
+                </div>
+              ) : (
+                <p className="text-lg text-muted-foreground">Review your answers by going back, or submit them now.</p>
+              )}
               
               {error && (
                 <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-xl font-medium">
@@ -204,7 +244,7 @@ export function PublicFormClient({ slug, title, canvasData }: { slug: string, ti
 
               <Button 
                 onClick={handleSubmit} 
-                disabled={isSubmitting}
+                disabled={isSubmitting || session?.user?.isTestAccount}
                 className={cn(
                   "h-14 px-10 text-lg font-bold rounded-2xl shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all",
                   isSubmitting && "opacity-70 cursor-not-allowed"
@@ -212,6 +252,8 @@ export function PublicFormClient({ slug, title, canvasData }: { slug: string, ti
               >
                 {isSubmitting ? (
                   <><Loader2 className="w-5 h-5 mr-3 animate-spin" /> Submitting...</>
+                ) : !session?.user ? (
+                  <>Sign In to Submit <ChevronRight className="w-6 h-6 ml-2" /></>
                 ) : (
                   <>Submit Response <CheckCircle2 className="w-6 h-6 ml-2" /></>
                 )}

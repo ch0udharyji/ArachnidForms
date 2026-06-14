@@ -2,11 +2,11 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, FileText, Database, LayoutDashboard, Clock } from "lucide-react";
+import { ArrowLeft, FileText, Database, LayoutDashboard, Clock } from "lucide-react";
 import Link from "next/link";
-import { formatDistanceToNow, format } from "date-fns";
 import { ResponsesCharts } from "@/components/analytics/responses-charts";
 import { CsvExportButton } from "@/components/analytics/csv-export-button";
+import { ResponsesTable } from "@/components/analytics/responses-table";
 
 export default async function ResponsesPage(props: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -18,7 +18,16 @@ export default async function ResponsesPage(props: { params: Promise<{ id: strin
     where: { id: params.id, ownerId: session.user.id },
     include: {
       responses: {
-        orderBy: { submittedAt: "desc" }
+        orderBy: { submittedAt: "desc" },
+        include: {
+          respondent: {
+            select: {
+              name: true,
+              email: true,
+              image: true,
+            }
+          }
+        }
       }
     }
   });
@@ -89,45 +98,7 @@ export default async function ResponsesPage(props: { params: Promise<{ id: strin
         ) : (
           <div className="space-y-8">
             <ResponsesCharts form={form} />
-            <div className="rounded-2xl border border-border bg-surface/30 overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead className="bg-surface/50 text-muted-foreground font-semibold border-b border-border text-xs uppercase tracking-wider">
-                  <tr>
-                    <th className="px-6 py-4 whitespace-nowrap">Submitted</th>
-                    {columns.map(col => (
-                      <th key={col} className="px-6 py-4 whitespace-nowrap">{col}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/50">
-                  {form.responses.map(response => {
-                    const answers = response.answers as Record<string, any>;
-                    return (
-                      <tr key={response.id} className="hover:bg-surface/50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-muted-foreground" title={format(new Date(response.submittedAt), 'PPpp')}>
-                          {formatDistanceToNow(new Date(response.submittedAt), { addSuffix: true })}
-                        </td>
-                        {columns.map(col => {
-                          const val = answers[col];
-                          let displayVal = val;
-                          if (Array.isArray(val)) displayVal = val.join(", ");
-                          else if (typeof val === 'object' && val !== null) displayVal = JSON.stringify(val);
-                          else if (val === undefined || val === null) displayVal = <span className="text-muted-foreground/50">-</span>;
-                          
-                          return (
-                            <td key={col} className="px-6 py-4 max-w-[300px] truncate">
-                              {displayVal}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
+            <ResponsesTable responses={form.responses} columns={columns} />
           </div>
         )}
       </main>

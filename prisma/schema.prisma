@@ -25,6 +25,7 @@ model User {
   forms         Form[]
   templates     Template[]
   apiKeys       ApiKey[]
+  submittedResponses FormResponse[] @relation("SubmittedResponses")
 }
 
 model Account {
@@ -86,8 +87,10 @@ model FormResponse {
   answers     Json     @default("{}")
   submittedAt DateTime @default(now())
   metadata    Json?
+  respondentId String?
 
   form        Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  respondent  User?    @relation("SubmittedResponses", fields: [respondentId], references: [id], onDelete: SetNull)
 }
 
 model Template {

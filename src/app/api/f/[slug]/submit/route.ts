@@ -1,11 +1,21 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 
 export async function POST(
   req: Request,
   props: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "You must be logged in to submit this form" }, { status: 401 });
+    }
+    
+    if (session.user.isTestAccount) {
+      return NextResponse.json({ error: "Test accounts are not allowed to submit forms. Please sign up with a real account." }, { status: 403 });
+    }
+
     const params = await props.params;
     const body = await req.json();
     const { answers } = body;
@@ -39,6 +49,7 @@ export async function POST(
     await db.formResponse.create({
       data: {
         formId: form.id,
+        respondentId: session.user.id,
         answers: answers || {},
       }
     });
