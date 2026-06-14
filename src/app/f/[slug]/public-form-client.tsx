@@ -276,7 +276,11 @@ function InnerPublicFormClient({ slug, title, canvasData, session, previousRespo
             <div className="w-full text-center space-y-8 py-8">
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">Ready to submit?</h2>
               
-              {session?.user?.isTestAccount ? (
+              {(!session?.user) ? (
+                <div className="p-4 bg-primary/10 border border-primary/20 text-primary rounded-xl text-base font-medium leading-relaxed max-w-xl mx-auto">
+                  You must be signed in to submit this form. Your progress is saved locally.
+                </div>
+              ) : session?.user?.isTestAccount ? (
                 <div className="p-4 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl text-base font-medium leading-relaxed max-w-xl mx-auto">
                   Test accounts cannot submit forms. Please sign in with a real account to continue.
                 </div>
@@ -291,7 +295,7 @@ function InnerPublicFormClient({ slug, title, canvasData, session, previousRespo
               )}
 
               <Button 
-                onClick={session?.user?.isTestAccount ? () => signIn(undefined, { callbackUrl: pathname }) : handleSubmit} 
+                onClick={(!session?.user || session?.user?.isTestAccount) ? () => signIn(undefined, { callbackUrl: pathname }) : handleSubmit} 
                 disabled={isSubmitting}
                 className={cn(
                   "h-14 sm:h-16 px-8 sm:px-12 text-lg sm:text-xl font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all w-full sm:w-auto mt-6",
@@ -300,7 +304,7 @@ function InnerPublicFormClient({ slug, title, canvasData, session, previousRespo
               >
                 {isSubmitting ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting...</>
-                ) : session?.user?.isTestAccount ? (
+                ) : (!session?.user || session?.user?.isTestAccount) ? (
                   <>Sign In to Submit <ChevronRight className="w-5 h-5 ml-2" /></>
                 ) : (
                   <>

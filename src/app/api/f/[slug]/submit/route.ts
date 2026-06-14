@@ -9,9 +9,11 @@ export async function POST(
   try {
     const session = await auth();
     
-    // Only block if they are specifically logged in with a test account.
-    // Anonymous users are allowed to submit.
-    if (session?.user?.isTestAccount) {
+    if (!session?.user) {
+      return NextResponse.json({ error: "You must be logged in to submit this form" }, { status: 401 });
+    }
+    
+    if (session.user.isTestAccount) {
       return NextResponse.json({ error: "Test accounts are not allowed to submit forms. Please sign up with a real account." }, { status: 403 });
     }
 
