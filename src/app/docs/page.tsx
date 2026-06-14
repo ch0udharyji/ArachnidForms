@@ -101,6 +101,9 @@ S3_SECRET_ACCESS_KEY=""
 S3_REGION=""
 S3_BUCKET_NAME=""
 
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=""
+RECAPTCHA_SECRET_KEY=""
+
 NEXT_PUBLIC_APP_URL="https://anachnidforms.vercel.app"`}</code></pre>
             </div>
           </section>
