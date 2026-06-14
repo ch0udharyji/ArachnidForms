@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Home, Layers, FileText, Settings, Key, LayoutDashboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export function Sidebar() {
+export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
 
   const mainLinks = [
@@ -42,7 +42,7 @@ export function Sidebar() {
   };
 
   return (
-    <div className="flex h-screen w-64 flex-col border-r border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className={cn("flex h-full w-64 flex-col border-r border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
       <div className="h-16 flex items-center px-6 shrink-0 relative">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-50" />
         <Link href="/dashboard" className="flex items-center gap-2 group">
