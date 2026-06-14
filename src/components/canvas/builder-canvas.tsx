@@ -27,7 +27,7 @@ import { PropertiesPanel } from './properties-panel';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Save, ArrowLeft, Share2, Copy, Globe, QrCode, Hash } from 'lucide-react';
+import { Save, ArrowLeft, Share2, Copy, Globe, QrCode, Hash, Download } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
@@ -161,6 +161,31 @@ function CanvasArea({ formId, formSlug, initialData, integrations, isTestAccount
   const copyLink = () => {
     navigator.clipboard.writeText(shareLink);
     toast.success("Link copied to clipboard!");
+  };
+
+  const downloadQR = () => {
+    const svg = document.getElementById("form-qr-code");
+    if (!svg) return;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.onload = () => {
+      const padding = 24;
+      canvas.width = img.width + padding * 2;
+      canvas.height = img.height + padding * 2;
+      if (ctx) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, padding, padding);
+      }
+      const pngFile = canvas.toDataURL("image/png");
+      const downloadLink = document.createElement("a");
+      downloadLink.download = `form-qr-${formId || formSlug}.png`;
+      downloadLink.href = pngFile;
+      downloadLink.click();
+    };
+    img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
   };
 
   const isValidConnection = useCallback((connection: Connection) => {
@@ -471,11 +496,15 @@ function CanvasArea({ formId, formSlug, initialData, integrations, isTestAccount
             </div>
           ) : (
             <div className="space-y-6 py-4 flex flex-col items-center">
-              <div className="p-4 bg-white rounded-xl">
-                <QRCodeSVG value={shareLink} size={180} level="H" includeMargin={false} />
+              <div className="p-4 bg-white rounded-xl shadow-sm border border-border/50">
+                <QRCodeSVG id="form-qr-code" value={shareLink} size={180} level="H" includeMargin={false} />
               </div>
               
-              <div className="w-full space-y-2">
+              <Button variant="outline" size="sm" onClick={downloadQR} className="h-8">
+                <Download className="w-3.5 h-3.5 mr-2" /> Download QR
+              </Button>
+              
+              <div className="w-full space-y-2 mt-2">
                 <Label>Public Link</Label>
                 <div className="flex items-center space-x-2">
                   <div className="grid flex-1 gap-2">
