@@ -15,12 +15,12 @@ export function Sidebar() {
   ];
 
   const settingsLinks = [
-    { href: "/settings", icon: Settings, label: "General" },
+    { href: "/settings", icon: Settings, label: "General", exact: true },
     { href: "/settings/api-keys", icon: Key, label: "API Keys" },
   ];
 
-  const NavLink = ({ href, icon: Icon, label }: { href: string, icon: any, label: string }) => {
-    const isActive = pathname === href || pathname.startsWith(`${href}/`);
+  const NavLink = ({ href, icon: Icon, label, exact }: { href: string, icon: any, label: string, exact?: boolean }) => {
+    const isActive = exact ? pathname === href : (pathname === href || pathname.startsWith(`${href}/`));
     
     return (
       <Link 
