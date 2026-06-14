@@ -13,7 +13,7 @@ export default async function Home() {
     <div className="h-screen flex flex-col overflow-hidden bg-background text-foreground relative font-sans selection:bg-primary/30">
       
       {/* Dynamic Island Header */}
-      <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-background/70 backdrop-blur-2xl border border-border/50 rounded-full px-6 h-14 flex items-center justify-between w-[90%] max-w-5xl shadow-2xl transition-all duration-300">
+      <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-background/70 backdrop-blur-2xl border border-border/50 rounded-full px-6 h-14 flex items-center justify-between w-[90%] max-w-5xl 2xl:max-w-7xl shadow-2xl transition-all duration-300">
         <div className="flex items-center gap-2">
           <div className="relative w-6 h-6 flex items-center justify-center">
              <Image src="/logo.png" alt="ArachnidForms Logo" width={24} height={24} className="object-contain" />
@@ -55,11 +55,11 @@ export default async function Home() {
           <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] animate-in fade-in duration-1000 delay-300 fill-mode-both" />
         </div>
         
-        <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tighter leading-[1.1] mb-6 max-w-4xl bg-clip-text text-transparent bg-gradient-to-b from-foreground to-muted-foreground animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out fill-mode-both">
+        <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] 2xl:text-[7.5rem] font-black tracking-tighter leading-[1.1] mb-6 max-w-4xl 2xl:max-w-6xl bg-clip-text text-transparent bg-gradient-to-b from-foreground to-muted-foreground animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out fill-mode-both">
           Form building,<br/>reimagined for the <span className="relative whitespace-nowrap"><span className="absolute -inset-1 rounded-lg bg-primary/20 blur-xl opacity-0 animate-in fade-in duration-1000 delay-700 fill-mode-both" /><span className="relative text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500 italic pr-2">future.</span></span>
         </h1>
         
-        <p className="text-base md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 ease-out fill-mode-both">
+        <p className="text-base md:text-xl 2xl:text-2xl text-muted-foreground mb-10 max-w-2xl 2xl:max-w-4xl leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 ease-out fill-mode-both">
           Stop building boring forms. Design powerful, logical, and beautiful interactive flows on an infinite canvas that wow your audience.
         </p>
 
@@ -87,7 +87,7 @@ export default async function Home() {
 
       {/* 2. Footer */}
       <footer className="border-t border-border/50 bg-surface/30 py-6 z-10 relative flex-shrink-0">
-        <div className="container mx-auto px-6 max-w-5xl w-full">
+        <div className="container mx-auto px-6 max-w-5xl 2xl:max-w-7xl w-full">
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
              <div className="flex items-center gap-2">
                <div className="w-6 h-6 flex items-center justify-center">
