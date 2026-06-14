@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="header.png" alt="ArachnidForms Logo" width="800" />
+  <img src="./public/header.png" alt="ArachnidForms Logo" width="800" />
 
   <h1>ArachnidForms</h1>
 
