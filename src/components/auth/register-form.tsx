@@ -103,11 +103,19 @@ export function RegisterForm() {
         <Button variant="outline" className="h-11 bg-surface border-border hover:bg-muted transition-colors" onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
           Continue with Google
         </Button>
-        <Link href="/docs" className="w-full">
-          <Button variant="outline" className="w-full h-11 bg-surface border-border hover:bg-muted transition-colors">
-            Docs & Setup
-          </Button>
-        </Link>
+        <Button 
+          variant="outline" 
+          type="button"
+          className="w-full h-11 bg-surface border-border hover:bg-muted transition-colors" 
+          onClick={() => {
+            setLoading(true)
+            signIn("credentials", { isTestMode: "true", callbackUrl: "/dashboard" })
+          }}
+          disabled={loading}
+        >
+          {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+          Go in test mode
+        </Button>
       </div>
 
       <p className="px-8 text-center text-sm text-muted-foreground mt-8">
