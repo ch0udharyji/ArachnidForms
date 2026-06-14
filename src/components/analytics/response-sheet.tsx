@@ -47,7 +47,67 @@ export function ResponseSheet({
   if (!response) return null;
 
   const handlePrint = () => {
-    window.print();
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast.error("Please allow popups to print the response.");
+      return;
+    }
+    
+    const title = `Response from ${response.respondent?.name || "Anonymous User"}`;
+    const dateStr = format(new Date(response.submittedAt), 'PPpp');
+    
+    let html = `<!DOCTYPE html>
+<html>
+<head>
+  <title>${title}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #111; max-width: 800px; margin: 0 auto; padding: 2rem; }
+    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; border-bottom: 2px solid #eaeaea; padding-bottom: 1rem; color: #000; }
+    .meta { color: #666; font-size: 0.95rem; margin-bottom: 2rem; }
+    .q-container { margin-top: 1.5rem; page-break-inside: avoid; }
+    .q { font-weight: 600; font-size: 1.1rem; color: #333; margin-bottom: 0.5rem; }
+    .a { padding: 1rem; background: #f9f9f9; border-radius: 6px; border: 1px solid #eaeaea; white-space: pre-wrap; word-break: break-word; }
+    .no-answer { color: #888; font-style: italic; }
+    @media print {
+      body { padding: 0; max-width: none; }
+      .a { background: transparent; border: 1px solid #ddd; }
+    }
+  </style>
+</head>
+<body>
+  <h1>${title}</h1>
+  <div class="meta">
+    <div><strong>Email:</strong> ${response.respondent?.email || "Not provided"}</div>
+    <div><strong>Submitted on:</strong> ${dateStr}</div>
+  </div>`;
+
+    const answersObj = response.answers as Record<string, any>;
+    columns.forEach((col, idx) => {
+      const val = answersObj[col];
+      let displayVal = val;
+      if (Array.isArray(val)) displayVal = val.join(", ");
+      else if (typeof val === 'object' && val !== null) displayVal = JSON.stringify(val);
+      else if (val === undefined || val === null || val === "") displayVal = '<span class="no-answer">No answer provided</span>';
+      
+      html += `
+  <div class="q-container">
+    <div class="q">${idx + 1}. ${col}</div>
+    <div class="a">${displayVal}</div>
+  </div>`;
+    });
+    
+    html += `</body></html>`;
+    
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.focus();
+    
+    // Short timeout to ensure styles are applied
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
   };
 
   const handleDelete = async () => {
