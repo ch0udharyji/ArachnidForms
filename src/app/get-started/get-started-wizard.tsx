@@ -130,7 +130,7 @@ export default function GetStartedWizard({ envStatus }: { envStatus?: { hasSmtp:
         <div className="flex-1 flex flex-col relative overflow-hidden">
           
           {/* STEP 1 */}
-          <div className={cn("absolute inset-0 p-6 md:p-10 flex flex-col items-center justify-center transition-all duration-500 ease-in-out", step === 1 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-full pointer-events-none")}>
+          <div className={cn("absolute inset-0 overflow-y-auto p-4 sm:p-6 md:p-10 flex flex-col items-center justify-center transition-all duration-500 ease-in-out", step === 1 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-full pointer-events-none")}>
             <div className="text-center mb-8 shrink-0 max-w-3xl">
               <div className="flex justify-center mb-4">
                 <img src="/logo.png" alt="ArachnidForms Logo" className="w-16 h-16 object-contain" />
@@ -177,7 +177,7 @@ export default function GetStartedWizard({ envStatus }: { envStatus?: { hasSmtp:
           </div>
 
           {/* STEP 2 */}
-          <div className={cn("absolute inset-0 p-6 md:p-10 flex flex-col transition-all duration-500 ease-in-out", step === 2 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none")}>
+          <div className={cn("absolute inset-0 overflow-y-auto p-4 sm:p-6 md:p-10 flex flex-col transition-all duration-500 ease-in-out", step === 2 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none")}>
             <div className="max-w-5xl mx-auto w-full">
               <div className="text-left mb-4 shrink-0 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
@@ -210,7 +210,7 @@ export default function GetStartedWizard({ envStatus }: { envStatus?: { hasSmtp:
                       Core Services
                       <span className="text-[10px] font-normal normal-case opacity-70">Optional fallback to .env</span>
                     </h4>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <Label className="text-xs font-semibold">Global Webhook URL</Label>
                         <Input name="webhook" type="url" placeholder="https://api.yourdomain.com" value={integrations.webhook} onChange={handleChange} className="h-8 text-xs font-mono bg-background" />
@@ -224,7 +224,7 @@ export default function GetStartedWizard({ envStatus }: { envStatus?: { hasSmtp:
 
                   <div className="p-3 border border-border bg-surface/30 rounded-lg space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Payments & Chat</h4>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <Label className="text-xs">Stripe Secret Key</Label>
                         <Input name="stripe" type="password" placeholder="sk_live_..." value={integrations.stripe} onChange={handleChange} className="h-8 text-xs font-mono bg-background" />
@@ -245,13 +245,13 @@ export default function GetStartedWizard({ envStatus }: { envStatus?: { hasSmtp:
                       Email Services
                       {!envStatus?.hasSmtp && <span className="text-[10px] font-normal normal-case text-destructive">Required</span>}
                     </h4>
-                    <div className="grid grid-cols-4 gap-2">
-                      <div className="space-y-1 col-span-2"><Label className="text-[10px]">Resend Key</Label><Input name="resend" type="password" placeholder="re_..." value={integrations.resend} onChange={handleChange} className="h-7 text-xs font-mono bg-background" /></div>
-                      <div className="space-y-1 col-span-2"><Label className="text-[10px]">From Email</Label><Input name="smtp_from" placeholder="noreply@..." value={integrations.smtp_from} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
-                      <div className="space-y-1 col-span-2"><Label className="text-[10px]">SMTP Host</Label><Input name="smtp_host" placeholder="smtp.gmail.com" value={integrations.smtp_host} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
-                      <div className="space-y-1"><Label className="text-[10px]">Port</Label><Input name="smtp_port" placeholder="587" value={integrations.smtp_port} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
-                      <div className="space-y-1"><Label className="text-[10px]">User</Label><Input name="smtp_user" placeholder="user" value={integrations.smtp_user} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
-                      <div className="space-y-1 col-span-4"><Label className="text-[10px]">SMTP Password</Label><Input name="smtp_pass" type="password" placeholder="••••••••" value={integrations.smtp_pass} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                      <div className="space-y-1 sm:col-span-2"><Label className="text-[10px]">Resend Key</Label><Input name="resend" type="password" placeholder="re_..." value={integrations.resend} onChange={handleChange} className="h-7 text-xs font-mono bg-background" /></div>
+                      <div className="space-y-1 sm:col-span-2"><Label className="text-[10px]">From Email</Label><Input name="smtp_from" placeholder="noreply@..." value={integrations.smtp_from} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
+                      <div className="space-y-1 sm:col-span-2"><Label className="text-[10px]">SMTP Host</Label><Input name="smtp_host" placeholder="smtp.gmail.com" value={integrations.smtp_host} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
+                      <div className="space-y-1 sm:col-span-1"><Label className="text-[10px]">Port</Label><Input name="smtp_port" placeholder="587" value={integrations.smtp_port} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
+                      <div className="space-y-1 sm:col-span-1"><Label className="text-[10px]">User</Label><Input name="smtp_user" placeholder="user" value={integrations.smtp_user} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
+                      <div className="space-y-1 sm:col-span-4"><Label className="text-[10px]">SMTP Password</Label><Input name="smtp_pass" type="password" placeholder="••••••••" value={integrations.smtp_pass} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
                     </div>
                   </div>
 
@@ -261,11 +261,11 @@ export default function GetStartedWizard({ envStatus }: { envStatus?: { hasSmtp:
                       File Storage (Amazon S3)
                       {!envStatus?.hasS3 && <span className="text-[10px] font-normal normal-case text-destructive">Required</span>}
                     </h4>
-                    <div className="grid grid-cols-4 gap-2">
-                      <div className="space-y-1 col-span-2"><Label className="text-[10px]">Access Key ID</Label><Input name="s3_access" placeholder="AKIA..." value={integrations.s3_access} onChange={handleChange} className="h-7 text-xs font-mono bg-background" /></div>
-                      <div className="space-y-1 col-span-2"><Label className="text-[10px]">Secret Key</Label><Input name="s3_secret" type="password" placeholder="••••••••" value={integrations.s3_secret} onChange={handleChange} className="h-7 text-xs font-mono bg-background" /></div>
-                      <div className="space-y-1 col-span-2"><Label className="text-[10px]">Region</Label><Input name="s3_region" placeholder="us-east-1" value={integrations.s3_region} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
-                      <div className="space-y-1 col-span-2"><Label className="text-[10px]">Bucket</Label><Input name="s3_bucket" placeholder="arachnid-uploads" value={integrations.s3_bucket} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                      <div className="space-y-1 sm:col-span-2"><Label className="text-[10px]">Access Key ID</Label><Input name="s3_access" placeholder="AKIA..." value={integrations.s3_access} onChange={handleChange} className="h-7 text-xs font-mono bg-background" /></div>
+                      <div className="space-y-1 sm:col-span-2"><Label className="text-[10px]">Secret Key</Label><Input name="s3_secret" type="password" placeholder="••••••••" value={integrations.s3_secret} onChange={handleChange} className="h-7 text-xs font-mono bg-background" /></div>
+                      <div className="space-y-1 sm:col-span-2"><Label className="text-[10px]">Region</Label><Input name="s3_region" placeholder="us-east-1" value={integrations.s3_region} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
+                      <div className="space-y-1 sm:col-span-2"><Label className="text-[10px]">Bucket</Label><Input name="s3_bucket" placeholder="arachnid-uploads" value={integrations.s3_bucket} onChange={handleChange} className="h-7 text-xs bg-background" /></div>
                     </div>
                   </div>
                 </div>
@@ -275,7 +275,7 @@ export default function GetStartedWizard({ envStatus }: { envStatus?: { hasSmtp:
         </div>
 
         {/* Footer Navigation */}
-        <div className="h-20 shrink-0 flex justify-between items-center border-t border-border px-8 md:px-10 bg-surface/50 z-20">
+        <div className="h-20 shrink-0 flex justify-between items-center border-t border-border px-4 sm:px-8 md:px-10 bg-surface/50 z-20">
           <Button 
             variant="ghost" 
             onClick={handleBack} 
