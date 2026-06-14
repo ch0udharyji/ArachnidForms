@@ -4,7 +4,6 @@ import { ArrowRight, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import { auth } from '@/lib/auth'
 import { UserMenu } from '@/components/shared/user-menu'
-import { SignOutButton } from '@/components/shared/sign-out-button'
 
 export default async function Home() {
   const session = await auth();
@@ -29,7 +28,6 @@ export default async function Home() {
               <Link href="/dashboard" className="text-sm font-semibold hover:text-primary transition-colors hidden sm:block">
                 Dashboard
               </Link>
-              <SignOutButton isTestAccount={session.user.isTestAccount} />
               <UserMenu user={session.user} />
             </>
           ) : (
