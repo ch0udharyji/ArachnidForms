@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
-import { Type, CheckSquare, List, AlignLeft, CircleDot, Upload, Mail, Hash, Phone, Calendar, Star, ToggleRight, Link as LinkIcon, PenTool, CreditCard, GitBranch, Calculator, MessageSquare, EyeOff } from 'lucide-react';
+import { Type, CheckSquare, List, AlignLeft, CircleDot, Upload, Mail, Hash, Phone, Calendar, Star, ToggleRight, Link as LinkIcon, PenTool, CreditCard, GitBranch, Calculator, MessageSquare, EyeOff, Key, Clock, SlidersHorizontal, Palette, MapPin } from 'lucide-react';
 
 const iconMap: Record<string, React.ReactNode> = {
   text: <Type className="w-4 h-4" />,
@@ -21,6 +21,11 @@ const iconMap: Record<string, React.ReactNode> = {
   calculation: <Calculator className="w-4 h-4" />,
   statement: <MessageSquare className="w-4 h-4" />,
   hidden: <EyeOff className="w-4 h-4" />,
+  password: <Key className="w-4 h-4" />,
+  time: <Clock className="w-4 h-4" />,
+  slider: <SlidersHorizontal className="w-4 h-4" />,
+  color: <Palette className="w-4 h-4" />,
+  address: <MapPin className="w-4 h-4" />,
 };
 
 export const QuestionNode = memo(({ data, selected }: NodeProps) => {
@@ -45,12 +50,13 @@ export const QuestionNode = memo(({ data, selected }: NodeProps) => {
         
         {/* Visual placeholder based on type */}
         <div className="mt-3 opacity-50 pointer-events-none">
-          {['text', 'email', 'number', 'phone', 'url'].includes(type) && (
+          {['text', 'email', 'number', 'phone', 'url', 'password'].includes(type) && (
             <div className="h-8 w-full border border-border rounded-md bg-background flex items-center px-3">
                <span className="text-xs text-muted-foreground opacity-50">Input field</span>
             </div>
           )}
           {type === 'textarea' && <div className="h-16 w-full border border-border rounded-md bg-background flex p-3"><span className="text-xs text-muted-foreground opacity-50">Long answer text...</span></div>}
+          {type === 'address' && <div className="h-16 w-full border border-border rounded-md bg-background flex p-3 flex-col gap-2"><div className="h-2 w-full bg-muted rounded" /><div className="h-2 w-2/3 bg-muted rounded" /></div>}
           {type === 'select' && (
             <div className="h-8 w-full border border-border rounded-md bg-background flex items-center px-3 justify-between">
               <span className="text-xs text-muted-foreground">Select option...</span>
@@ -80,6 +86,12 @@ export const QuestionNode = memo(({ data, selected }: NodeProps) => {
             <div className="h-8 w-full border border-border rounded-md bg-background flex items-center px-3 justify-between">
               <span className="text-xs text-muted-foreground opacity-50">MM/DD/YYYY</span>
               <Calendar className="w-3 h-3 text-muted-foreground" />
+            </div>
+          )}
+          {type === 'time' && (
+            <div className="h-8 w-full border border-border rounded-md bg-background flex items-center px-3 justify-between">
+              <span className="text-xs text-muted-foreground opacity-50">--:-- --</span>
+              <Clock className="w-3 h-3 text-muted-foreground" />
             </div>
           )}
           {type === 'rating' && (
@@ -112,6 +124,22 @@ export const QuestionNode = memo(({ data, selected }: NodeProps) => {
             <div className="h-8 w-full border border-dashed border-border rounded-md bg-background flex items-center justify-center">
               <EyeOff className="w-3 h-3 text-muted-foreground opacity-50 mr-2" />
               <span className="text-[10px] font-mono text-muted-foreground opacity-50">Hidden Field</span>
+            </div>
+          )}
+          {type === 'slider' && (
+            <div className="flex items-center w-full h-8 px-2">
+              <div className="h-1 w-full bg-border rounded-full relative">
+                <div className="absolute top-1/2 -translate-y-1/2 left-1/2 w-3 h-3 bg-primary rounded-full shadow" />
+              </div>
+            </div>
+          )}
+          {type === 'color' && (
+            <div className="h-8 w-full border border-border rounded-md bg-background flex items-center px-3 justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full bg-primary/50" />
+                <span className="text-xs text-muted-foreground opacity-50">#000000</span>
+              </div>
+              <Palette className="w-3 h-3 text-muted-foreground" />
             </div>
           )}
           {type === 'file' && (

@@ -394,9 +394,18 @@ function InnerPublicFormClient({ slug, title, canvasData, session, previousRespo
                   ) : (
                     <Input 
                       autoFocus
-                      type={currentNode?.data?.questionType === 'email' ? 'email' : currentNode?.data?.questionType === 'number' ? 'number' : 'text'}
-                      placeholder="Type your answer here..."
-                      className="h-14 sm:h-16 px-4 sm:px-6 text-lg sm:text-xl font-medium bg-background/50 border border-border focus:border-primary focus:ring-1 focus:ring-primary/20 rounded-xl sm:rounded-2xl shadow-sm"
+                      type={
+                        ['email', 'number', 'password', 'time', 'color', 'date', 'file', 'url'].includes(currentNode?.data?.questionType as string) 
+                          ? currentNode?.data?.questionType as string
+                          : currentNode?.data?.questionType === 'slider' 
+                            ? 'range' 
+                            : 'text'
+                      }
+                      placeholder={currentNode?.data?.questionType === 'color' ? '#000000' : "Type your answer here..."}
+                      className={cn(
+                        "h-14 sm:h-16 px-4 sm:px-6 text-lg sm:text-xl font-medium bg-background/50 border border-border focus:border-primary focus:ring-1 focus:ring-primary/20 rounded-xl sm:rounded-2xl shadow-sm",
+                        currentNode?.data?.questionType === 'color' && "p-1 h-14 w-24 cursor-pointer"
+                      )}
                       value={answersById[currentNode.id] || ""}
                       onChange={(e) => handleInputChange(currentNode.id, currentNode.data.label as string, e.target.value)}
                       onKeyDown={(e) => {
