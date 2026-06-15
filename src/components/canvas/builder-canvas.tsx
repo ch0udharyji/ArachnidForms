@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useRef, useMemo } from 'react';
 import {
   ReactFlow,
   MiniMap,
