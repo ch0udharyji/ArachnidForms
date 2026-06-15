@@ -95,7 +95,7 @@ export default async function Home() {
              </div>
              
              <div className="flex flex-wrap justify-center gap-6 text-sm font-medium text-muted-foreground">
-
+               <Link href="/contributions" className="hover:text-foreground transition-colors">Contributions</Link>
                <Link href="/tos" className="hover:text-foreground transition-colors">Terms of Service</Link>
                <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
                <Link href="/login" className="hover:text-foreground transition-colors">Login</Link>
