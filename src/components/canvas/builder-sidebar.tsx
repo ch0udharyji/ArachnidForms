@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react';
-import { Type, CheckSquare, List, AlignLeft, CircleDot, Upload, ChevronLeft, ChevronRight, Mail, Hash, Phone, Calendar, Star, ToggleRight, Link as LinkIcon, PenTool, CreditCard, GitBranch, Calculator, MessageSquare, EyeOff, Search } from 'lucide-react';
+import { Type, CheckSquare, List, AlignLeft, CircleDot, Upload, ChevronLeft, ChevronRight, Mail, Hash, Phone, Calendar, Star, ToggleRight, Link as LinkIcon, PenTool, CreditCard, GitBranch, Calculator, MessageSquare, EyeOff, Search, Key, Clock, SlidersHorizontal, Palette, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -24,6 +24,8 @@ export function BuilderSidebar() {
         { type: 'statement', icon: <MessageSquare className="w-4 h-4" />, label: 'Statement', desc: 'Read-only text.' },
         { type: 'email', icon: <Mail className="w-4 h-4" />, label: 'Email', desc: 'Validates format.' },
         { type: 'number', icon: <Hash className="w-4 h-4" />, label: 'Number', desc: 'Numerical input.' },
+        { type: 'password', icon: <Key className="w-4 h-4" />, label: 'Password', desc: 'Hidden text.' },
+        { type: 'address', icon: <MapPin className="w-4 h-4" />, label: 'Address', desc: 'Physical address.' },
       ]
     },
     {
@@ -33,6 +35,7 @@ export function BuilderSidebar() {
         { type: 'radio', icon: <CircleDot className="w-4 h-4" />, label: 'Single Choice', desc: 'Radio buttons.' },
         { type: 'checkbox', icon: <CheckSquare className="w-4 h-4" />, label: 'Multiple Choice', desc: 'Checkboxes.' },
         { type: 'switch', icon: <ToggleRight className="w-4 h-4" />, label: 'Yes / No', desc: 'Boolean toggle.' },
+        { type: 'slider', icon: <SlidersHorizontal className="w-4 h-4" />, label: 'Slider', desc: 'Range selector.' },
       ]
     },
     {
@@ -46,6 +49,8 @@ export function BuilderSidebar() {
         { type: 'signature', icon: <PenTool className="w-4 h-4" />, label: 'Signature', desc: 'Draw signature.' },
         { type: 'payment', icon: <CreditCard className="w-4 h-4" />, label: 'Payment', desc: 'Stripe checkout.' },
         { type: 'hidden', icon: <EyeOff className="w-4 h-4" />, label: 'Hidden Field', desc: 'URL params.' },
+        { type: 'time', icon: <Clock className="w-4 h-4" />, label: 'Time', desc: 'Time picker.' },
+        { type: 'color', icon: <Palette className="w-4 h-4" />, label: 'Color', desc: 'Color picker.' },
       ]
     },
     {
