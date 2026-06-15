@@ -72,6 +72,60 @@ export async function POST(
 
     const settings = (form.canvasData as any)?.settings || {};
 
+    // Backend Validation
+    const nodes = (form.canvasData as any)?.nodes || [];
+    const questionNodes = nodes.filter((n: any) => n.type === 'questionNode');
+    
+    for (const node of questionNodes) {
+      const qType = node.data?.questionType;
+      const isRequired = node.data?.required;
+      const val = answersById[node.id];
+      const label = node.data?.label || 'Untitled Question';
+
+      if (isRequired && (val === undefined || val === null || val === '')) {
+        return NextResponse.json({ error: `Field "${label}" is required.` }, { status: 400 });
+      }
+
+      if (val !== undefined && val !== null && val !== '') {
+        switch (qType) {
+          case 'email':
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(val))) {
+              return NextResponse.json({ error: `Field "${label}" must be a valid email.` }, { status: 400 });
+            }
+            break;
+          case 'number':
+          case 'slider':
+          case 'rating':
+          case 'nps':
+            if (isNaN(Number(val))) {
+              return NextResponse.json({ error: `Field "${label}" must be a number.` }, { status: 400 });
+            }
+            break;
+          case 'url':
+            try {
+              new URL(String(val));
+            } catch (_) {
+              return NextResponse.json({ error: `Field "${label}" must be a valid URL.` }, { status: 400 });
+            }
+            break;
+          case 'consent':
+            if (isRequired && val !== true && String(val) !== 'true') {
+              return NextResponse.json({ error: `You must agree to "${label}".` }, { status: 400 });
+            }
+            break;
+          case 'select':
+          case 'radio':
+          case 'dropdown':
+          case 'multiple_choice':
+            const options = node.data?.options || [];
+            if (options.length > 0 && !options.includes(String(val))) {
+              return NextResponse.json({ error: `Invalid option selected for "${label}".` }, { status: 400 });
+            }
+            break;
+        }
+      }
+    }
+
     if (responseId) {
       // Handle Update
       if (!settings.allowEdit) {

@@ -41,6 +41,12 @@ Respondents see one question at a time with full keyboard navigation support, re
 **Template Gallery**
 Bootstrap new forms using a curated library of templates that ship as fully wired, ready-to-use node graphs.
 
+**Comprehensive Form Modules**
+Build forms with a diverse array of input blocks, including newly added modules like Matrix, NPS (Net Promoter Score), Image Choice, Ranking, Consent checkmarks, Video/Audio embedding, and custom HTML/Section blocks.
+
+**Strict Backend Validation & Error Handling**
+All form inputs are strictly validated on the server side against their respective types. Attempting to submit invalid emails, missing required fields, out-of-range numbers, or manipulated dropdown options will instantly be caught and gracefully rejected, preventing corrupted data and rendering clear frontend error states.
+
 **Analytics Dashboard**
 Automatically generated pie and bar charts for multiple-choice and rating questions, providing immediate insight into response distributions.
 
