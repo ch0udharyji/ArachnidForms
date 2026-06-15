@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { signIn } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { SignatureModule } from "@/components/forms/modules/signature-module";
 
 interface FormNode {
   id: string;
@@ -390,6 +391,46 @@ function InnerPublicFormClient({ slug, title, canvasData, session, previousRespo
                           {num}
                         </button>
                       ))}
+                    </div>
+                  ) : currentNode?.data?.questionType === 'nps' ? (
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
+                      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleInputChange(currentNode.id, currentNode.data.label as string, num)}
+                          className={cn(
+                            "w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl text-lg sm:text-xl font-bold transition-all border flex items-center justify-center",
+                            answersById[currentNode.id] === num ? "bg-primary text-primary-foreground border-primary scale-110 shadow-md shadow-primary/20" : "bg-background/50 border-border text-muted-foreground hover:border-primary hover:text-foreground"
+                          )}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                  ) : currentNode?.data?.questionType === 'consent' || currentNode?.data?.questionType === 'checkbox' ? (
+                    <label className={cn(
+                      "flex items-start space-x-4 p-4 sm:p-5 border rounded-xl sm:rounded-2xl cursor-pointer transition-all hover:bg-primary/5",
+                      answersById[currentNode.id] ? "border-primary bg-primary/10 ring-1 ring-primary shadow-sm shadow-primary/10" : "border-border bg-background/50"
+                    )}>
+                      <input 
+                        type="checkbox" 
+                        checked={!!answersById[currentNode.id]}
+                        onChange={(e) => handleInputChange(currentNode.id, currentNode.data.label as string, e.target.checked)}
+                        className="w-5 h-5 sm:w-6 sm:h-6 mt-0.5 text-primary border-border focus:ring-primary rounded"
+                      />
+                      <span className="text-lg sm:text-xl font-medium text-foreground">
+                        {currentNode?.data?.questionType === 'consent' ? 'I agree to the terms and conditions' : 'Select this option'}
+                      </span>
+                    </label>
+                  ) : currentNode?.data?.questionType === 'signature' ? (
+                    <SignatureModule 
+                      value={answersById[currentNode.id] || ""}
+                      onChange={(val) => handleInputChange(currentNode.id, currentNode.data.label as string, val)}
+                    />
+                  ) : ['statement', 'section', 'video', 'audio', 'html', 'image'].includes(currentNode?.data?.questionType as string) ? (
+                    <div className="p-4 sm:p-6 bg-muted/50 rounded-xl border border-border">
+                      <p className="text-muted-foreground">Please review the information above and click OK to continue.</p>
                     </div>
                   ) : (
                     <Input 
