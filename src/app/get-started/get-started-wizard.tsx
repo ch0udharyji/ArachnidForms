@@ -80,6 +80,7 @@ export default function GetStartedWizard({ envStatus }: { envStatus?: { hasSmtp:
     if (!envStatus?.hasS3) {
       requiredKeys.push("s3_access", "s3_secret", "s3_region", "s3_bucket");
     }
+    requiredKeys.push("database_url");
 
     for (const key of requiredKeys) {
       // @ts-ignore
@@ -254,7 +255,7 @@ export default function GetStartedWizard({ envStatus }: { envStatus?: { hasSmtp:
                         <Input name="discord_webhook" type="url" placeholder="https://discord.com/..." value={integrations.discord_webhook} onChange={handleChange} className="h-8 text-xs font-mono bg-background" />
                       </div>
                       <div className="space-y-1 sm:col-span-2">
-                        <Label className="text-xs">Database URL</Label>
+                        <Label className="text-xs">Database URL <span className="text-destructive">*</span></Label>
                         <Input name="database_url" type="password" placeholder="postgresql://..." value={integrations.database_url} onChange={handleChange} className="h-8 text-xs font-mono bg-background" />
                       </div>
                     </div>

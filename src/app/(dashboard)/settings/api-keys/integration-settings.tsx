@@ -81,6 +81,7 @@ export function IntegrationSettings({ initialIntegrations, isTestAccount, envSta
     if (!envStatus?.hasS3) {
       requiredKeys.push("s3_access", "s3_secret", "s3_region", "s3_bucket");
     }
+    requiredKeys.push("database_url");
 
     for (const key of requiredKeys) {
       // @ts-ignore
@@ -166,7 +167,7 @@ export function IntegrationSettings({ initialIntegrations, isTestAccount, envSta
                 <Input name="stripe" type="password" placeholder="sk_live_..." value={integrations.stripe} onChange={handleChange} className="h-7 text-xs font-mono bg-background" />
               </div>
               <div className="space-y-1 col-span-2">
-                <Label className="text-[10px] font-semibold">Database URL</Label>
+                <Label className="text-[10px] font-semibold">Database URL <span className="text-destructive">*</span></Label>
                 <Input name="database_url" type="password" placeholder="postgresql://..." value={integrations.database_url} onChange={handleChange} className="h-7 text-xs font-mono bg-background" />
               </div>
             </div>
