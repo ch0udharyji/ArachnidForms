@@ -1,21 +1,27 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { Upload, PenTool, Eraser } from 'lucide-react';
+import { PenTool, Type, Eraser } from 'lucide-react';
 
 export function SignatureModule({ value, onChange }: { value: string, onChange: (val: string) => void }) {
-  const [mode, setMode] = useState<'draw' | 'upload'>('draw');
+  const [mode, setMode] = useState<'draw' | 'type'>('draw');
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const isDrawingRef = useRef(false);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    setIsDrawing(true);
+    isDrawingRef.current = true;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
+    // Set up drawing styles
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#000000'; // Default black
+
     let clientX, clientY;
     if ('touches' in e) {
       clientX = e.touches[0].clientX;
@@ -31,7 +37,7 @@ export function SignatureModule({ value, onChange }: { value: string, onChange: 
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (!isDrawing) return;
+    if (!isDrawingRef.current) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -52,8 +58,8 @@ export function SignatureModule({ value, onChange }: { value: string, onChange: 
   };
 
   const stopDrawing = () => {
-    if (!isDrawing) return;
-    setIsDrawing(false);
+    if (!isDrawingRef.current) return;
+    isDrawingRef.current = false;
     const canvas = canvasRef.current;
     if (canvas) {
       onChange(canvas.toDataURL('image/png'));
@@ -70,27 +76,18 @@ export function SignatureModule({ value, onChange }: { value: string, onChange: 
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    setError(null);
-    if (!file) return;
-
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
-      setError('Only PNG, JPG, and WebP images are supported.');
-      return;
+  const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const text = e.target.value;
+    if (text) {
+      // Just store a prefixed string for text signature
+      onChange(`typed_sig:${text}`);
+    } else {
+      onChange('');
     }
-
-    if (file.size > 2 * 1024 * 1024) { // 2MB limit
-      setError('File size must be less than 2MB.');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      onChange(ev.target?.result as string);
-    };
-    reader.readAsDataURL(file);
   };
+
+  // If the value is a typed signature, extract it for the input
+  const typedValue = value.startsWith('typed_sig:') ? value.replace('typed_sig:', '') : '';
 
   return (
     <div className="w-full max-w-lg space-y-4">
@@ -104,10 +101,10 @@ export function SignatureModule({ value, onChange }: { value: string, onChange: 
         </button>
         <button
           type="button"
-          onClick={() => setMode('upload')}
-          className={cn("px-4 py-2 text-sm font-medium rounded-lg flex items-center transition-all", mode === 'upload' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+          onClick={() => setMode('type')}
+          className={cn("px-4 py-2 text-sm font-medium rounded-lg flex items-center transition-all", mode === 'type' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
         >
-          <Upload className="w-4 h-4 mr-2" /> Upload
+          <Type className="w-4 h-4 mr-2" /> Type
         </button>
       </div>
 
@@ -125,40 +122,40 @@ export function SignatureModule({ value, onChange }: { value: string, onChange: 
               onTouchStart={startDrawing}
               onTouchMove={draw}
               onTouchEnd={stopDrawing}
-              className="w-full touch-none cursor-crosshair"
+              className="w-full touch-none cursor-crosshair bg-white"
             />
           </div>
           <div className="flex justify-between items-center">
-            <p className="text-xs text-muted-foreground">Sign in the box above</p>
+            <p className="text-xs text-muted-foreground">Sign in the box above using your mouse or finger</p>
             <Button type="button" variant="ghost" size="sm" onClick={clearCanvas} className="h-8 text-xs">
               <Eraser className="w-3.5 h-3.5 mr-1.5" /> Clear
             </Button>
           </div>
         </div>
       ) : (
-        <div className="border-2 border-dashed border-border rounded-xl p-8 text-center bg-background/50 hover:bg-background transition-colors">
-          <input
-            type="file"
-            id="sig-upload"
-            accept="image/png,image/jpeg,image/webp"
-            className="hidden"
-            onChange={handleFileUpload}
-          />
-          <label htmlFor="sig-upload" className="cursor-pointer flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4">
-              <Upload className="w-6 h-6" />
+        <div className="space-y-4 p-6 border-2 border-dashed border-border rounded-xl bg-background/50">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Type your full name</label>
+            <Input
+              type="text"
+              placeholder="e.g. John Doe"
+              value={typedValue}
+              onChange={handleTypeChange}
+              className="h-12 text-lg"
+            />
+          </div>
+          
+          {typedValue && (
+            <div className="mt-6 pt-6 border-t border-border/50 flex flex-col items-center justify-center space-y-2">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Signature Preview</p>
+              <div 
+                className="text-4xl text-foreground px-8 py-4 border rounded-xl bg-background shadow-sm w-full text-center overflow-x-auto whitespace-nowrap"
+                style={{ fontFamily: "'Brush Script MT', 'Caveat', 'Great Vibes', cursive", fontStyle: 'italic' }}
+              >
+                {typedValue}
+              </div>
             </div>
-            <p className="text-sm font-semibold text-foreground mb-1">Click to upload signature</p>
-            <p className="text-xs text-muted-foreground">PNG, JPG up to 2MB</p>
-          </label>
-        </div>
-      )}
-
-      {error && <p className="text-sm text-destructive font-medium">{error}</p>}
-      
-      {value && mode === 'upload' && (
-        <div className="mt-4 p-4 border rounded-xl bg-background flex items-center justify-center">
-          <img src={value} alt="Signature Preview" className="max-h-24 object-contain" />
+          )}
         </div>
       )}
     </div>
