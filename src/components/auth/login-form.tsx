@@ -111,9 +111,16 @@ export function LoginForm() {
           variant="outline" 
           type="button"
           className="w-full h-11 bg-surface border-border hover:bg-muted transition-colors" 
-          onClick={() => {
+          onClick={async () => {
             setLoading(true)
-            signIn("credentials", { isTestMode: "true", callbackUrl })
+            const res = await signIn("credentials", { redirect: false, isTestMode: "true" })
+            if (!res?.error) {
+              router.push(callbackUrl)
+              router.refresh()
+            } else {
+              setError("Failed to start test mode")
+              setLoading(false)
+            }
           }}
           disabled={loading}
         >
