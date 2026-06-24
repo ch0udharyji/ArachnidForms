@@ -261,7 +261,7 @@ export function IntegrationSettings({ initialIntegrations, isTestAccount, envSta
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowWarning(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={() => signOut({ callbackUrl: "/register" })}>Continue & Register</Button>
+            <Button variant="destructive" onClick={() => signOut({ redirect: false }).then(() => window.location.assign("/register"))}>Continue & Register</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

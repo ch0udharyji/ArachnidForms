@@ -77,7 +77,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
         toast.error(res.error)
       } else {
         toast.success("Account deleted. Logging out...")
-        signOut({ callbackUrl: "/" })
+        signOut({ redirect: false }).then(() => window.location.assign("/"))
       }
     }
   }

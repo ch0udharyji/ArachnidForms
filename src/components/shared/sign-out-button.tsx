@@ -13,7 +13,8 @@ export function SignOutButton({ isTestAccount }: { isTestAccount?: boolean }) {
         if (isTestAccount) {
           await fetch("/api/auth/delete-test-account", { method: "POST" }).catch(() => {});
         }
-        signOut({ callbackUrl: "/login" });
+        await signOut({ redirect: false });
+        window.location.assign("/login");
       }}
     >
       <LogOut className="w-3.5 h-3.5 mr-2" />

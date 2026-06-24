@@ -18,7 +18,7 @@ export function SessionTimer({ expiry }: { expiry: number }) {
       
       if (remaining <= 0) {
         clearInterval(interval)
-        signOut({ callbackUrl: "/login" })
+        signOut({ redirect: false }).then(() => window.location.assign("/login"))
       }
     }, 1000)
 
